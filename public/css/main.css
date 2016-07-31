@@ -1,0 +1,26 @@
+img {
+    display: block;
+    margin: auto 0;
+    max-width: 100%;
+    height: auto;
+}
+
+.article-content {
+  min-height: 400px;
+}
+
+footer {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-family: inherit;
+    color: #ca4440;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+footer h3 {
+    font-weight: 600;
+    line-height: 1.1;
+    box-sizing: border-box;
+}
+
+

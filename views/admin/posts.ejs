@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlogMe后台管理 - 文章</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/animate.min.css" rel="stylesheet">
+    <link href="/css/style.min.css" rel="stylesheet">
+
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12 animated fadeInRight">
+            <div class="mail-box-header">
+
+                <form method="get" action="/searchPosts" class="pull-right mail-search">
+                    <div class="input-group">
+                        <input type="text" value="<%= title %>" class="form-control input-sm" name="search" placeholder="搜索文章">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                搜索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <h2>
+                    文章 (<%= total %>)
+                </h2>
+                <div class="mail-tools tooltip-demo m-t-md">
+                    <div class="btn-group pull-right">
+                        <% if(!isFirstPage){ %>
+                        <a href="/admin/posts?p=<%= page-1 %>" class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i>
+                        </a>
+                        <% } %>
+                        <% if (!isLastPage) { %>
+                        <a href="/admin/posts?p=<%= page+1 %>" class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i>
+                        </a>
+                        <% } %>
+                    </div>
+                    <a href="/admin/posts" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="刷新文章列表"><i
+                                class="fa fa-refresh"></i> 刷新
+                    </a>
+                    <button class="btn btn-white btn-sm" onclick="hulvaDelete()" data-toggle="tooltip" data-placement="top" title="删除文章"><i
+                                class="fa fa-trash-o"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="mail-box text-center">
+                <table class="table table-hover">
+                    <thead>
+                    <tr class="unread">
+                        <td class="check-mail">
+                            <input type="checkbox" class="i-checks">
+                        </td>
+                        <td>标题</td>
+                        <td>作者</td>
+                        <td>创建时间</td>
+                        <td>评论</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% posts.forEach(function (post, index) { %>
+                    <tr class="post<%= index %>">
+                        <td class="check-mail">
+                            <input type="checkbox" class="i-checks" value="<%= post._id %>">
+                        </td>
+                        <td>
+                            <a href="#" data-toggle="modal" data-target="#myModal" data-whatever="<%= post.title %>" data-content="<%= post.content %>">
+                                <%= post.title %>
+                            </a>
+                        </td>
+                        <td>
+                            <%= post.author %>
+                        </td>
+                        <td>
+                            <%= post.create_at.getFullYear() + "-" + (post.create_at.getMonth() + 1) + "-" + post.create_at.getDate() + " " + post.create_at.getHours() + ":" + (post.create_at.getMinutes() < 10 ? '0' + post.create_at.getMinutes() : post.create_at.getMinutes()) %>
+                        </td>
+                        <td>
+                            <p>评论</p>
+                        </td>
+                        <td>
+                            <button onclick="hulvaDelete('<%= post._id %>')">删除</button>
+                        </td>
+                    </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 弹出框显示详情 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">文章详情</h4>
+      </div>
+      <div class="modal-body">
+        <!-- <form>
+        </form> -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Send message</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/content.min.js"></script>
+<script src="/js/iCheck/icheck.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",})
+    });
+
+    function hulvaDelete(id) {
+        var post_ids = '';
+        if (id){
+            post_ids = id;
+        }else {
+            var $checks = $(".i-checks");
+            $checks.each(function (index, item) {
+                if (item.value !== 'on') { // 排除thead
+                    if (item.checked) { // 将被选中的项的值拼接起来，用,隔开
+                        post_ids += item.value + ',';
+                    }
+                }
+            });
+            if (post_ids.length == 0){
+                alert("请至少选择一个要删除的用户！");
+                return;
+            }
+        }
+        $.post("/admin/posts/delete", {ids: post_ids}, function (data) {
+                    // TODO 返回删除时所在页，而不是每次删除后都回到第一页
+                })
+                .success(function () {
+                    window.location.href = '/admin/posts'
+                });
+    }
+
+    $('#myModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // Button that triggered the modal
+      var recipient = button.data('whatever') // Extract info from data-* attributes
+      console.log(button.data('content'))
+      //var content =
+      // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+      // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+      var modal = $(this)
+      modal.find('.modal-title').text('文章详情： ' + recipient)
+      modal.find('.modal-body').html(button.data('content'))
+    })
+</script>
+</body>
+
+</html>

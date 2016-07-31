@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BlogMe</title>
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="/css/animate.min.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/style.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
+    <meta name="keywords" content="Hulva, BlogMe"/>
+
+    <meta name="description" content="我是Hulva，这只是我的毕业设计">
+    <script type="text/javascript">
+        if (window.top !== window.self) {
+            window.top.location = window.location;
+        }
+    </script>
+
+    <script src="/js/jquery.min.js "></script>
+
+    <!-- blogme-hulva.rhcloud.com Baidu tongji analytics -->
+    <script>
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?6dcb6dd6a79bc2c6fc72dd589e97131a";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+</head>
+
+<body class="gray-bg">
+<div class="container">
+    <!-- start of header -->
+    <div class="row" id="header">
+        <div class="col-md-2 col-md-offset-1">
+            <a href="/">
+                <img src="/logo.png" alt="BlogMe">
+            </a>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="pull-left">
+                    <ul class="nav nav-pills">
+                        <li><a href="/archive">存档<i class="glyphicon glyphicon-hdd"></i></a></li>
+                        <% if (typeof(user) != 'undefined' && user) { %>
+                        <li><a href="/post">发文<i class="glyphicon glyphicon-pencil"></i></a></li>
+                        <li><a href="/signout">登出<i class="glyphicon glyphicon-log-out"></i></a></li>
+                        <% if(user.isAdmin){ %>
+                        <li><a href="/admin">管理员<i class="glyphicon glyphicon-user"></i></a></li>
+                        <% } %>
+                        <% } else { %>
+                        <li><a href="/signin">登录<i class="glyphicon glyphicon-log-in"></i></a></li>
+                        <li><a href="/signup">注册<i class="glyphicon glyphicon-hand-up "></i></a></li>
+                        <% } %>
+                    </ul>
+                </div>
+                <div class="pull-right">
+                    <form method="get" action="/search" class="pull-right mail-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control input-sm" name="search" placeholder="文章搜索">
+                            <div class="input-group-btn">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    搜索
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end of header -->
+    <!-- start of main content -->
+    <%- body %>
+    <!-- end of main content -->
+    <footer class="row">
+        <div class="col-md-8 col-md-offset-2 ">
+            <div class="row">
+                <hr>
+                <div id="links" class="text-center">
+                    <ul class="list-unstyled">
+                        <li class="row">
+                            <div class="col-md-3 col-md-offset-3 text-right">Contact Me With:</div>
+                            <div class="col-md-4 text-left">
+                                <span class="block"> email<i class="glyphicon glyphicon-circle-arrow-right"> lvsweet217@163.com</i></span>
+                                <span class="block"> QQ<i class="glyphicon glyphicon-circle-arrow-right"> 1007194502</i></span>
+                            </div>
+                        </li>
+                        <li>
+                            <h3>find me in <a href="https://github.com/Hulva" target="_blank">GitHub</a></h3></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyRight text-center">
+                &copy; 2015
+                    <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+                                </span><%= (new Date()).getFullYear() %>
+                <div class="powered-by ">powered by <a href="https://github.com/Hulva ">Hulva</a></div>
+                <div>特别鸣谢：<a href="http://www.bootcss.com/">BootStrap</a> | <a href="http://www.zi-han.net/">Zihan's
+                        Blog</a></div>
+                <div>部分图标来自<a href="http://glyphicons.com/">Glyphicons</a></div>
+            </div>
+        </div>
+    </footer>
+    <!-- end of footer -->
+</div>
+<!-- end of container -->
+<script src="/js/bootstrap.min.js "></script>
+<script src="/js/content.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#vertical-timeline").toggleClass("center-orientation");
+    });
+</script>
+</body>
+</html>

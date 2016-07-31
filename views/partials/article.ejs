@@ -1,0 +1,44 @@
+<% posts.forEach(function (post, index) { %>
+<div class="ibox">
+    <div class="ibox-content">
+        <a href="/user/<%= post.author %>/<%= post._id %>" class="btn-link">
+            <h2>
+                <%= post.title %>
+            </h2>
+        </a>
+        <div class="small m-b-xs">
+            <strong><a href="/user/<%= post.author %>"><%= post.author %></a></strong> <span class="text-muted"><i
+                        class="fa fa-clock-o"></i> <%= post.create_at_ago() %></span>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <%- post.content %>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>标签：</h5>
+                <% post.tags.forEach(function (tag, index) { %>
+                <% if (tag) { %>
+                <a class="tag btn btn-primary btn-xs" href="/tags/<%= tag %>">
+                    <i class="glyphicon glyphicon-tag"><%= tag %></i>
+                </a>
+                <% } %>
+                <% }) %>
+            </div>
+            <div class="col-md-6">
+                <div class="small text-right">
+                    <h5>状态：</h5>
+                    <div><i class="fa fa-comments-o"> </i> <%= post.comment_count %> 评论</div>
+                    <i class="glyphicon glyphicon-heart"> </i> <%= post.reprint_count %> 转载
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% }) %>
+<% if (isLastPage) { %>
+<button class="btn btn-white btn-block m" id="target">没有更多了</button>
+<% } else { %>
+<button class="btn btn-primary btn-block m" id="target"><i class="glyphicon glyphicon-chevron-down"></i></button>
+<% } %>

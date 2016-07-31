@@ -1,0 +1,63 @@
+<% layout('blogmePlate') -%>
+<div id="user" class="row main">
+    <div id="user_info" class="col-md-3  text-center">
+        <div class="thumbnail">
+            <img class="img-thumbnail" style="width: 144px;height: 177px" src="<%= user.avatar_image_url %>" />
+            <div class="caption">
+                <h3><%= user.name %></h3>
+            </div>
+        </div>
+        <div>
+            <ul class="list-unstyled list-inline">
+                <li class="vcard-stat">
+                    <strong class="vcard-stat-count d-block"><%= user.follower_count %></strong>
+                    <span class="text-muted">Follower</span>
+                </li>
+                <li class="vcard-stat">
+                    <strong class="vcard-stat-count d-block"><%= user.post_count %></strong>
+                    <span class="text-muted">Posted</span>
+                </li>
+                <li class="vcard-stat">
+                    <strong class="vcard-stat-count d-block"><%= user.following_count %></strong>
+                    <span class="text-muted">Following</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="myposts" class="col-md-8 col-md-offset-1">
+        <% posts.forEach( function (post, index) { %>
+        <h2><a href="/user/<%= post.author %>/<%= post._id %>"><%= post.title %></a></h2>
+        <!--<a href="/user/<%= post.author %>"><img src="<%= user.avatar_image_url %>" class="user_head_user"/></a>-->
+        <div class="info">
+            作者：
+            <a href="/user/<%= post.author %>">
+                <%= post.author %>
+            </a> | 日期：
+            <%= post.create_at.getFullYear() + "-" + (post.create_at.getMonth() + 1) + "-" + post.create_at.getDate() + " " + post.create_at.getHours() + ":" + (post.create_at.getMinutes() < 10 ? '0' + post.create_at.getMinutes() : post.create_at.getMinutes()) %>
+            标签：
+            <% post.tags.forEach(function (tag, index) { %>
+            <% if (tag) { %>
+            <a class="tag label label-info" class="tag" href="/tags/<%= tag %>">
+                <i class="glyphicon glyphicon-tag"><%= tag %></i>
+            </a>
+            <% } %>
+            <% }) %>
+            <% if (!post.isOriginal) { %>
+            <br/><a href="<%= post.original_url %>">原文链接</a>
+            <% } %>
+        </div>
+        <p>
+            <%- post.content %>
+        </p>
+        <p class="info">阅读：
+            <%= post.visit_count %> | 评论：
+            <%= post.comment_count %> | 转载：
+            <% if (post.isOriginal) { %>
+            <%= post.reprint_count %>
+            <% } else { %>
+            <%= 0 %>
+            <% } %>
+        </p>
+        <% }) %>
+    </div>
+</div>

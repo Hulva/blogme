@@ -1,0 +1,65 @@
+<% layout('blogmePlate') -%>
+<div class="row">
+    <div class="col-sm-10 col-md-offset-1">
+        <div class="wrapper wrapper-content">
+            <div class="row animated fadeInRight">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content" id="ibox-content">
+                            <div id="vertical-timeline" class="vertical-container dark-timeline">
+                                <% posts.forEach(function (post, index) { %>
+                                <div class="vertical-timeline-block">
+                                    <div class="vertical-timeline-icon blue-bg">
+                                        <i class="glyphicon glyphicon-heart"></i>
+                                    </div>
+                                    <div class="vertical-timeline-content">
+                                        <div><span class="h3"><%= post.title %></span> --by--> <a href="/user/<%= post.author %>"><%= post.author %></a> </div><br>
+                                        <a href="/user/<%= post.author %>/<%= post._id %>" class="btn btn-sm btn-primary"> 查看文章</a>
+                                                <span class="vertical-date">
+                                        <%= post.create_at_ago() %> <br>
+                                        <small><%= (post.create_at.getFullYear() + "-" + (post.create_at.getMonth() + 1) + "-" + post.create_at.getDate()) %></small>
+                                    </span>
+                                    </div>
+                                </div>
+                                <% }) %>
+                                <% if (isLastPage) { %>
+                                <button class="btn btn-white btn-block m" id="target">没有更多了</button>
+                                <% } else { %>
+                                <a href="?p=<%=page+1%>" class="btn btn-primary btn-block m" id="target"><i class="fa fa-arrow-down"></i> 显示更多</a>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    // onload = $(function () {
+    //     var i = 2;
+    //     $(window).scroll(function () {
+    //         var winH = $(document.body).height(); //页面可视区域高度
+    //         var pageH = $(document).height();
+    //         var scrollT = $(window).scrollTop(); //滚动条top
+    //         var aa = (pageH - winH - scrollT);
+    //         if (aa < 1) {
+    //             $.get("/archive", { p: i},
+    //                     function(data){
+    //                         if (data.length > 0) {
+    //                             console.log(data.getElementsByClassName('vertical-timeline'));
+    //                             $("#target").replaceWith(data.find(".vertical-timeline"));
+    //                             i++;
+    //                         } else {
+    //                             return false;
+    //                         }
+    //                         //console.log(data);
+    //                     });
+    //         }
+    //     });
+    //
+    //     //console.log(this)
+    // });
+    // TODO 存档页滚动刷新数据
+</script>

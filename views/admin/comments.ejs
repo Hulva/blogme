@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BlogMe后台管路 - 评论列表</title>
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/animate.min.css" rel="stylesheet">
+    <link href="/css/style.min.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12 animated fadeInRight">
+            <div class="mail-box-header">
+
+                <form method="get" action="/searchComment" class="pull-right mail-search">
+                    <div class="input-group">
+                        <input type="text" value="<%= title %>" class="form-control input-sm" name="search" placeholder="搜索评论">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                搜索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <h2>
+                    评论 (<%= total %>)
+                </h2>
+                <div class="mail-tools tooltip-demo m-t-md">
+                    <div class="btn-group pull-right">
+                        <% if(!isFirstPage){ %>
+                        <a href="/admin/comments?p=<%= page-1 %>" class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i>
+                        </a>
+                        <% } %>
+                        <% if (!isLastPage) { %>
+                        <a href="/admin/comments?p=<%= page+1 %>" class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i>
+                        </a>
+                        <% } %>
+                    </div>
+                    <a href="/admin/comments" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="刷新评论列表"><i
+                                class="fa fa-refresh"></i> 刷新
+                    </a>
+                    <button class="btn btn-white btn-sm" onclick="hulvaDelete()" data-toggle="tooltip" data-placement="top" title="删除评论"><i
+                                class="fa fa-trash-o"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="mail-box">
+                <table class="table table-hover text-center">
+                    <thead>
+                    <tr class="unread">
+                        <td class="check-mail">
+                            <input type="checkbox" class="i-checks">
+                        </td>
+                        <td>评论人</td>
+                        <td>文章</td>
+                        <td>发表时间</td>
+                        <td>内容</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% comments.forEach(function (comment, index) { %>
+                    <tr class="comment<%= index %>">
+                        <td class="check-mail">
+                            <input type="checkbox" class="i-checks" value="<%= comment._id %>">
+                        </td>
+                        <td>
+                            <a href="#" data-toggle="modal" data-target="#myModal<%= index %>">
+                                <%= comment.name %>
+                            </a>
+                        </td>
+                        <td>
+                            <p><%= comment.title %></p>
+                        </td>
+                        <td>
+                            <%= comment.create_at.getFullYear() + "-" + (comment.create_at.getMonth() + 1) + "-" + comment.create_at.getDate() + " " + comment.create_at.getHours() + ":" + (comment.create_at.getMinutes() < 10 ? '0' + comment.create_at.getMinutes() : comment.create_at.getMinutes()) %>
+                        </td>
+                        <td>
+                            <p><%= comment.content %></p>
+                        </td>
+                        <td>
+                            <button onclick="hulvaDelete('<%= comment._id %>')">删除</button>
+                        </td>
+                    </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+<script src="/js/content.min.js?v=1.0.0"></script>
+<script src="/js/iCheck/icheck.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",})
+    });
+
+    function hulvaDelete(id) {
+        var comment_ids = '';
+        if (id){
+            comment_ids = id;
+        }else {
+            var $checks = $(".i-checks");
+            $checks.each(function (index, item) {
+                if (item.value !== 'on') { // 排除thead
+                    if (item.checked) { // 将被选中的项的值拼接起来，用,隔开
+                        comment_ids += item.value + ',';
+                    }
+                }
+            });
+            if (comment_ids.length == 0){
+                alert("请至少选择一个要删除的用户！");
+                return;
+            }
+        }
+        $.post("/admin/comments/delete", {ids: comment_ids}, function (data) {
+                    // TODO 返回删除时所在页，而不是每次删除后都回到第一页
+                })
+                .success(function () {
+                    window.location.href = '/admin/comments'
+                });
+    }
+</script>
+</body>
+
+</html>

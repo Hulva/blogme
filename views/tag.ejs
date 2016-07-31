@@ -1,0 +1,50 @@
+<% layout('blogmePlate') -%>
+<div class="row wrapper wrapper-content  animated fadeInRight blog">
+    <div class="col-md-10 col-md-offset-1">
+        <div>
+            <h2>标签：<i class="glyphicon glyphicon-tag"><%= title %></i></h2>
+        </div>
+        <% posts.forEach(function (post, index) { %>
+        <div class="ibox">
+            <div class="ibox-content">
+                <a href="/user/<%= post.author %>/<%= post._id %>" class="btn-link">
+                    <h2>
+                        <%= post.title %>
+                    </h2>
+                </a>
+                <div class="small m-b-xs">
+                    <strong><%= post.author %></strong> <span class="text-muted"><i
+                                class="fa fa-clock-o"></i> <%= post.create_at_ago() %></span>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <%- post.content %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>标签：</h5>
+                        <% post.tags.forEach(function (tag, index) { %>
+                        <% if (tag) { %>
+                        <a class="tag btn btn-primary btn-xs" href="/tags/<%= tag %>">
+                            <i class="glyphicon glyphicon-tag"><%= tag %></i>
+                        </a>
+                        <% } %>
+                        <% }) %>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="small text-right">
+                            <h5>状态：</h5>
+                            <div><i class="fa fa-comments-o"> </i> <%= post.comment_count %> 评论</div>
+                            <i class="fa fa-eye"> </i> <%= post.reprint_count %> 转载
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+        <% if(hasNext){ %>
+        <button class="btn btn-primary btn-block m"><i class="fa fa-arrow-down"></i> 显示更多</button>
+        <% } %>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+<% layout('blogmePlate') -%>
+<div class="row wrapper wrapper-content  animated fadeInRight blog">
+    <div class="col-md-10 col-md-offset-1 article-content">
+        <% posts.forEach(function (post, index) { %>
+        <div class="ibox">
+            <div class="ibox-content">
+                <a href="/user/<%= post.author %>/<%= post._id %>" class="btn-link">
+                    <h2>
+                        <%= post.title %>
+                    </h2>
+                </a>
+                <div class="small m-b-xs">
+                    <strong><a href="/user/<%= post.author %>"><%= post.author %></a></strong> <span class="text-muted"><i
+                                class="fa fa-clock-o"></i> <%= post.create_at_ago() %></span>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <%- post.content %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>标签：</h5>
+                        <% post.tags.forEach(function (tag, index) { %>
+                        <% if (tag) { %>
+                        <a class="tag btn btn-primary btn-xs" href="/tags/<%= tag %>">
+                            <i class="glyphicon glyphicon-tag"><%= tag %></i>
+                        </a>
+                        <% } %>
+                        <% }) %>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="small text-right">
+                            <h5>状态：</h5>
+                            <div><i class="fa fa-comments-o"> </i> <%= post.comment_count %> 评论</div>
+                            <i class="glyphicon glyphicon-heart"> </i> <%= post.reprint_count %> 转载
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+        <% if (isLastPage) { %>
+        <button class="btn btn-white btn-block m" id="target">没有更多了</button>
+        <% } else { %>
+        <button class="btn btn-primary btn-block m" id="target"><i class="fa fa-arrow-down"></i></button>
+        <% } %>
+    </div>
+</div>
+<script type="text/javascript">
+    onload = $(function () {
+        var i = 2;
+        $(window).scroll(function () {
+            var winH = $(document.body).height(); //页面可视区域高度
+            var pageH = $(document).height();
+            var scrollT = $(window).scrollTop(); //滚动条top
+            var aa = (pageH - winH - scrollT);
+            if (aa < 1) {
+                $.get("/", { p: i},
+                        function(data){
+                            if (data.length > 0) {
+                                $("#target").replaceWith(data);
+                                i++;
+                            } else {
+                                return false;
+                            }
+                            //console.log(data);
+                        });
+                /*$.getJSON("/", {p: i}, function (json) {
+                 console.log(json.posts.length)
+                 i++;
+                 var $target = $($('.ibox').get(0)).clone();
+                 if (json.posts.length > 0) {
+                 $(".article-content").append($target.get(0));
+                 i++;
+                 } else {
+                 return false;
+                 }
+                 });*/
+            }
+        });
+
+        //console.log(this)
+    });
+</script>

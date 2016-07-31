@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BlogMe博客系统后台 - 用户管理</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/animate.min.css" rel="stylesheet">
+    <link href="/css/style.min.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12 animated fadeInRight">
+            <div class="mail-box-header">
+                <form method="get" action="/searchUser" class="pull-right mail-search">
+                    <div class="input-group">
+                        <input type="text" value="<%= title %>" class="form-control input-sm" name="search" placeholder="搜索用户">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                搜索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <h2>
+                    注册用户 (<%= total %>)
+                </h2>
+                <div class="mail-tools tooltip-demo m-t-md">
+                    <div class="btn-group pull-right">
+                        <% if(!isFirstPage){ %>
+                        <a href="/admin/users?p=<%= page-1 %>" class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i>
+                        </a>
+                        <% } %>
+                        <% if (!isLastPage) { %>
+                        <a href="/admin/users?p=<%= page+1 %>" class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i>
+                        </a>
+                        <% } %>
+                    </div>
+                    <a href="/admin/users" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top"
+                       title="刷新用户列表"><i
+                                class="fa fa-refresh"></i> 刷新
+                    </a><!--
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="锁定用户"><i
+                                class="fa fa-unlock-alt"></i>
+                    </button>
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="解锁用户"><i
+                                class="fa fa-unlock"></i>
+                    </button>-->
+                    <button class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" onclick="hulvaDelete()" title="删除用户"><i class="fa fa-trash-o"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="mail-box">
+
+                <table class="table table-hover table-mail">
+                    <thead>
+                    <tr class="unread">
+                        <td class="check-mail">
+                            <input type="checkbox" class="i-checks">
+                        </td>
+                        <td class="mail-ontact">用户名
+                        </td>
+                        <td class="mail-ontact">邮箱
+                        </td>
+                        <td class="mail-date">注册时间
+                        </td>
+                        <td class="">状态</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% users.forEach(function (user, index) { %>
+                    <% if (admin.name == user.name) { %>
+                    <% }else { %>
+                    <tr class="read">
+                        <td class="check-mail">
+                            <input type="checkbox" class="i-checks" value="<%= user._id %>">
+                        </td>
+                        <td><a href="#"><%= user.name %> </a>
+                        </td>
+                        <td><%= user.email %>
+                        </td>
+                        <td class="mail-date"><%= user.create_at.getFullYear() + "-" + (user.create_at.getMonth() + 1) + "-" + user.create_at.getDate() + " " + user.create_at.getHours() + ":" + (user.create_at.getMinutes() < 10 ? '0' + user.create_at.getMinutes() : user.create_at.getMinutes()) %></td>
+                        <td>
+                            <% if (user.isAdmin){ %>
+                            <span class="label label-warning"></span>
+                            <% } %>
+                            <% if(user.is_block){ %>
+                            <a href="/admin/users/block?userId=<%= user._id %>&isBlock=<%= user.is_block %>"> <span
+                                        class="fa fa-unlock-alt"></span>锁定</a>
+                            <% }else { %>
+                            <a href="/admin/users/block?userId=<%= user._id %>&isBlock=<%= user.is_block %>"> <span
+                                        class="fa fa-unlock"></span>未锁定</a>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }}) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+<script src="/js/content.min.js?v=1.0.0"></script>
+<script src="/js/iCheck/icheck.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",})
+    });
+    function hulvaDelete() {
+        var $checks = $(".i-checks");
+        var user_ids = '';
+        $checks.each(function (index, item) {
+            if (item.value !== 'on') { // 排除thead
+                if (item.checked) { // 将被选中的项的值拼接起来，用,隔开
+                    user_ids += item.value + ',';
+                }
+            }
+        });
+        if (user_ids.length == 0){
+            alert("请至少选择一个要删除的用户！");
+            return;
+        }
+        $.post("/admin/users/delete", {ids: user_ids}, function (data) {
+                    // TODO
+                })
+                .success(function () {
+                    window.location.href = '/admin/users'
+                });
+    }
+</script>
+</body>
+
+</html>
